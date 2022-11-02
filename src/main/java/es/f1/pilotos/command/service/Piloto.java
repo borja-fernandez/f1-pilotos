@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.Collection;
 import java.util.Optional;
 
 @Service
@@ -26,20 +25,19 @@ public class Piloto {
     public void insertarPiloto(es.f1.pilotos.command.model.Piloto pilotoRecibido){
         confirmarNoExistenciaPiloto(pilotoRecibido.getCodigo());
 
-        pilotoRepo.save(mapearPilotoDesdeEntrada(pilotoRecibido));
+        pilotoRepo.save(mapearPilotoDesdeEntrada(pilotoRecibido, TipoRegistro.tipoRegistro.ALTA));
     }
 
     public void eliminarPiloto(String codigo){
-        es.f1.pilotos.command.repository.Piloto pilotoBD = confirmarExistenciaPiloto(codigo);
-        Collection<es.f1.pilotos.command.repository.PilotoHabilidad> habilidadesPilotoBD = pilotoHabilidadRepo.findByIdPilotoOrderByIdHabilidad(pilotoBD.getId());
-        pilotoHabilidadRepo.deleteAll(habilidadesPilotoBD);
-        pilotoRepo.delete(pilotoBD);
+        es.f1.pilotos.command.repository.Piloto ultimoRegistroDePilotoBD = confirmarExistenciaPiloto(codigo);
+
+        pilotoRepo.save(mapearPilotoDesdeBD(ultimoRegistroDePilotoBD, TipoRegistro.tipoRegistro.BORRADO));
     }
 
     public void modificarPiloto(es.f1.pilotos.command.model.Piloto pilotoRecibido){
-        es.f1.pilotos.command.repository.Piloto pilotoBD = confirmarExistenciaPiloto(pilotoRecibido.getCodigo());
+        confirmarExistenciaPiloto(pilotoRecibido.getCodigo());
 
-        pilotoRepo.save(mapearPilotoExistenteDesdeEntrada(pilotoBD.getId(), pilotoRecibido));
+        pilotoRepo.save(mapearPilotoDesdeEntrada(pilotoRecibido, TipoRegistro.tipoRegistro.MODIFICACION));
     }
 
     public void insertarHabilidadEnPiloto(PilotoHabilidad pilotoHabilidadRecibido){
@@ -61,8 +59,8 @@ public class Piloto {
     }
 
     private void confirmarNoExistenciaPiloto(String codigoPiloto){
-        Optional<es.f1.pilotos.command.repository.Piloto> pilotoDB = pilotoRepo.findByCodigo(codigoPiloto);
-        if(pilotoDB.isPresent()) {
+        Optional<es.f1.pilotos.command.repository.Piloto> ultimoRegistroDePilotoDB = pilotoRepo.findFirstByCodigoOrderByFechaCreacionDesc(codigoPiloto);
+        if(ultimoRegistroDePilotoDB.isPresent() && ultimoRegistroDePilotoDB.get().estaEnVigor()) {
             throw new DuplicateObjectException("Ya existe un piloto con el código "+codigoPiloto);
         }
     }
@@ -78,11 +76,11 @@ public class Piloto {
     }
 
     private es.f1.pilotos.command.repository.Piloto confirmarExistenciaPiloto(String codigoPiloto){
-        Optional<es.f1.pilotos.command.repository.Piloto> pilotoDB = pilotoRepo.findByCodigo(codigoPiloto);
-        if(!pilotoDB.isPresent()) {
+        Optional<es.f1.pilotos.command.repository.Piloto> ultimoRegistroDePilotoDB = pilotoRepo.findFirstByCodigoOrderByFechaCreacionDesc(codigoPiloto);
+        if(!ultimoRegistroDePilotoDB.isPresent() || !ultimoRegistroDePilotoDB.get().estaEnVigor()) {
             throw new ObjectNotFoundException("Piloto inexistente con código "+codigoPiloto);
         }
-        return pilotoDB.get();
+        return ultimoRegistroDePilotoDB.get();
     }
 
     private es.f1.pilotos.command.repository.PilotoHabilidad confirmarExistenciaPilotoHabilidad(es.f1.pilotos.command.repository.Piloto pilotoBD, Habilidad habilidadBD){
@@ -104,18 +102,21 @@ public class Piloto {
         return habilidadDB.get();
     }
 
-    private es.f1.pilotos.command.repository.Piloto mapearPilotoExistenteDesdeEntrada(int idPiloto, es.f1.pilotos.command.model.Piloto pilotoRecibido){
+    private es.f1.pilotos.command.repository.Piloto mapearPilotoDesdeEntrada(es.f1.pilotos.command.model.Piloto pilotoRecibido, TipoRegistro.tipoRegistro tipoRegistro){
         return es.f1.pilotos.command.repository.Piloto.builder()
-                .id(idPiloto)
                 .codigo(pilotoRecibido.getCodigo())
                 .nombre(pilotoRecibido.getNombre())
+                .fechaCreacion(new Timestamp(System.currentTimeMillis()))
+                .tipoRegistro(tipoRegistro)
                 .build();
     }
 
-    private es.f1.pilotos.command.repository.Piloto mapearPilotoDesdeEntrada(es.f1.pilotos.command.model.Piloto pilotoRecibido){
+    private es.f1.pilotos.command.repository.Piloto mapearPilotoDesdeBD(es.f1.pilotos.command.repository.Piloto pilotoBD, TipoRegistro.tipoRegistro tipoRegistro){
         return es.f1.pilotos.command.repository.Piloto.builder()
-                .codigo(pilotoRecibido.getCodigo())
-                .nombre(pilotoRecibido.getNombre())
+                .codigo(pilotoBD.getCodigo())
+                .nombre(pilotoBD.getNombre())
+                .fechaCreacion(new Timestamp(System.currentTimeMillis()))
+                .tipoRegistro(tipoRegistro)
                 .build();
     }
 

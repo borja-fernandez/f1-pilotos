@@ -8,9 +8,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.List;
-
-import static org.apache.tomcat.jni.Time.now;
 
 @Entity
 @Table(name = "PILOTO")
@@ -23,6 +20,11 @@ public class Piloto {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name="SQ_PILOTO")
     private int id;
+    @Column(name="TIPO_REGISTRO")
+    @Enumerated(EnumType.STRING)
+    private TipoRegistro.tipoRegistro tipoRegistro;
+    @Column(name="FECHA_CREACION_REGISTRO")
+    private Timestamp fechaCreacion = new Timestamp(System.currentTimeMillis());
     @Column(name="CODIGO_A3")
     private String codigo;
     @Column(name="NOMBRE")
@@ -30,4 +32,11 @@ public class Piloto {
     @Column(name="FECHA_NACIMIENTO")
     private Date fechaNacimiento;
 
+    public boolean estaEnVigor() {
+        if (this.tipoRegistro.equals(TipoRegistro.tipoRegistro.BORRADO)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 }
