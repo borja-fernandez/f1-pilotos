@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.sql.Timestamp;
 
-import static org.apache.tomcat.jni.Time.now;
-
 @Entity
 @Table(name = "HABILIDAD_PILOTO")
 @NoArgsConstructor @AllArgsConstructor
@@ -31,4 +29,8 @@ public class PilotoHabilidad {
     private int idHabilidad;
     @Column(name="CANTIDAD")
     private int valor;
+    @ManyToOne
+    @JoinColumn(name="SQ_HABILIDAD", nullable=false, insertable = false, updatable = false)
+    private Habilidad habilidad;
+
 }
