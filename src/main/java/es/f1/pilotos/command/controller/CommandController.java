@@ -5,16 +5,10 @@ import es.f1.pilotos.command.exceptions.DuplicateObjectException;
 import es.f1.pilotos.command.exceptions.ObjectNotFoundException;
 import es.f1.pilotos.command.model.Piloto;
 import es.f1.pilotos.command.model.PilotoHabilidad;
-import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.websocket.server.PathParam;
-import java.util.Date;
-import java.util.HashMap;
 
 @RestController
 public class CommandController {
@@ -24,52 +18,53 @@ public class CommandController {
     @Autowired
     es.f1.pilotos.command.service.Piloto pilotoService;
 
-    @PostMapping(value = API_PATH)
-    public ResponseEntity insertarPiloto(@RequestBody Piloto pilotoRecibido){
-        HashMap<String, Integer> habilidades = new HashMap<>();
-        habilidades.put("Lluvia", 100);
-        habilidades.put("Seco", 98);
-        habilidades.put("Salida", 95);
+    @PostMapping(value = API_PATH + "/{codigoPiloto}")
+    public ResponseEntity insertarPiloto(@PathVariable String codigoPiloto,
+                                         @RequestBody Piloto pilotoRecibido){
 
-        Piloto p1 = Piloto.builder()
-                .codigo("ALO")
-                .nombre("Fernando Alonso")
-                .habilidades(habilidades)
-                .fechaNacimiento(new Date())
-                .build();
-
+        pilotoRecibido.setCodigo(codigoPiloto);
         pilotoService.insertarPiloto(pilotoRecibido);
 
         return ResponseEntity.accepted().build();
     }
 
-    @DeleteMapping(value = API_PATH + "/{codigoA3}")
-    public ResponseEntity modificarPiloto(@PathVariable String codigoA3){
+    @DeleteMapping(value = API_PATH + "/{codigoPiloto}")
+    public ResponseEntity modificarPiloto(@PathVariable String codigoPiloto){
 
-        pilotoService.eliminarPiloto(codigoA3);
+        pilotoService.eliminarPiloto(codigoPiloto);
 
         return ResponseEntity.accepted().build();
     }
 
-    @PutMapping(value = API_PATH)
-    public ResponseEntity modificarPiloto(@RequestBody Piloto pilotoRecibido){
+    @PutMapping(value = API_PATH + "/{codigoPiloto}")
+    public ResponseEntity modificarPiloto(@PathVariable String codigoPiloto,
+                                          @RequestBody Piloto pilotoRecibido){
 
+        pilotoRecibido.setCodigo(codigoPiloto);
         pilotoService.modificarPiloto(pilotoRecibido);
 
         return ResponseEntity.accepted().build();
     }
 
-    @PostMapping(value = API_PATH + "/habilidad")
-    public ResponseEntity insertarHabilidadEnPiloto(@RequestBody PilotoHabilidad pilotoHabilidadRecibido){
+    @PostMapping(value = API_PATH + "/{codigoPiloto}/habilidad/{codigoHabilidad}")
+    public ResponseEntity insertarHabilidadEnPiloto(@PathVariable String codigoPiloto,
+                                                    @PathVariable String codigoHabilidad,
+                                                    @RequestBody PilotoHabilidad pilotoHabilidadRecibido){
 
+        pilotoHabilidadRecibido.setCodigoPiloto(codigoPiloto);
+        pilotoHabilidadRecibido.setCodigoHabilidad(codigoHabilidad);
         pilotoService.insertarHabilidadEnPiloto(pilotoHabilidadRecibido);
 
         return ResponseEntity.accepted().build();
     }
 
-    @PutMapping(value = API_PATH + "/habilidad")
-    public ResponseEntity modificarHabilidadEnPiloto(@RequestBody PilotoHabilidad pilotoHabilidadRecibido){
+    @PutMapping(value = API_PATH + "/{codigoPiloto}/habilidad/{codigoHabilidad}")
+    public ResponseEntity modificarHabilidadEnPiloto(@PathVariable String codigoPiloto,
+                                                     @PathVariable String codigoHabilidad,
+                                                     @RequestBody PilotoHabilidad pilotoHabilidadRecibido){
 
+        pilotoHabilidadRecibido.setCodigoPiloto(codigoPiloto);
+        pilotoHabilidadRecibido.setCodigoHabilidad(codigoHabilidad);
         pilotoService.modificarHabilidadEnPiloto(pilotoHabilidadRecibido);
 
         return ResponseEntity.accepted().build();
