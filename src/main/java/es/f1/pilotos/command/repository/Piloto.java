@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Table(name = "PILOTO")
@@ -32,9 +31,9 @@ public class Piloto {
     private String nombre;
     @Column(name="FECHA_NACIMIENTO")
     private Date fechaNacimiento;
-    @OneToMany()
-    @JoinColumn(name="SQ_PILOTO", nullable=false, insertable = false, updatable = false)
-    List<PilotoHabilidad> habilidadesPiloto;
+//    @OneToMany()
+//    @JoinColumn(name="SQ_PILOTO", nullable=false, insertable = false, updatable = false)
+//    List<PilotoHabilidad> habilidadesPiloto;
 
     public boolean estaEnVigor() {
         if (this.tipoRegistro.equals(TipoRegistro.tipoRegistro.BORRADO)) {

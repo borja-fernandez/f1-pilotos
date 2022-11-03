@@ -24,9 +24,15 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.flywaydb:flyway-core'
 
+	//Testing
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.junit.vintage:junit-vintage-engine'
+	testRuntimeOnly 'org.junit.vintage:junit-vintage-engine'
 }
 
-tasks.named('test') {
+//tasks.named('test') {
+//	useJUnitPlatform()
+//}
+test {
 	useJUnitPlatform()
 }
