@@ -24,6 +24,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.flywaydb:flyway-core'
 
+	//OpenAPI
+	implementation 'org.springdoc:springdoc-openapi-ui:1.6.4'
+
 	//Testing
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.junit.vintage:junit-vintage-engine'

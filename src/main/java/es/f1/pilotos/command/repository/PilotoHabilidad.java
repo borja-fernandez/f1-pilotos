@@ -22,7 +22,7 @@ public class PilotoHabilidad {
     @Enumerated(EnumType.STRING)
     private TipoRegistro.tipoRegistro tipoRegistro;
     @Column(name="FECHA_CREACION_REGISTRO")
-    private Timestamp fechaCreacion = new Timestamp(System.currentTimeMillis());
+    private Timestamp fechaCreacion;
     @Column(name="SQ_PILOTO")
     private int idPiloto;
     @Column(name="SQ_HABILIDAD")

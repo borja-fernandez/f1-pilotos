@@ -1,6 +1,6 @@
 package es.f1.pilotos.command.model;
 
-import com.sun.istack.NotNull;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import java.util.Date;
@@ -9,9 +9,8 @@ import java.util.Date;
 @Getter @Setter
 @Builder
 public class Piloto {
-    @NotNull
+    @JsonIgnore
     private String codigo;
-    @NotNull
     private String nombre;
     private Date fechaNacimiento;
 }

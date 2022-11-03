@@ -24,7 +24,7 @@ public class Piloto {
     @Enumerated(EnumType.STRING)
     private TipoRegistro.tipoRegistro tipoRegistro;
     @Column(name="FECHA_CREACION_REGISTRO")
-    private Timestamp fechaCreacion = new Timestamp(System.currentTimeMillis());
+    private Timestamp fechaCreacion;
     @Column(name="CODIGO_A3")
     private String codigo;
     @Column(name="NOMBRE")
