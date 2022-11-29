@@ -19,4 +19,6 @@ spring:
     flyway:
         enabled: true
         baseline-on-migrate: true
+        table: flyway_schema_pilotos
+        default-schema: pilotos
 
