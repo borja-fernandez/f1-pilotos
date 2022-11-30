@@ -17,5 +17,5 @@ public class Piloto {
     public String codigo;
     public String nombre;
     public Date fecha_nacimiento;
-    HashMap<String, Integer> habilidades;
+    public HashMap<String, Integer> habilidades;
 }

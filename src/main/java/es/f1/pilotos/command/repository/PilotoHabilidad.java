@@ -33,4 +33,19 @@ public class PilotoHabilidad {
     @JoinColumn(name="SQ_HABILIDAD", nullable=false, insertable = false, updatable = false)
     private Habilidad habilidad;
 
+    public boolean estaEnVigor() {
+        if (this.tipoRegistro.equals(TipoRegistro.tipoRegistro.BORRADO)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public boolean esAlta() {
+        return this.tipoRegistro.equals(TipoRegistro.tipoRegistro.ALTA);
+    }
+
+    public boolean esModification() {
+        return this.tipoRegistro.equals(TipoRegistro.tipoRegistro.MODIFICACION);
+    }
 }
