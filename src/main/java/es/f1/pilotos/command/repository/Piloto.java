@@ -42,4 +42,12 @@ public class Piloto {
             return true;
         }
     }
+
+    public boolean esAlta() {
+        return this.tipoRegistro.equals(TipoRegistro.tipoRegistro.ALTA);
+    }
+
+    public boolean esModification() {
+        return this.tipoRegistro.equals(TipoRegistro.tipoRegistro.MODIFICACION);
+    }
 }

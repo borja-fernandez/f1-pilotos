@@ -1,8 +1,9 @@
 package es.f1.pilotos.service;
 
 import es.f1.pilotos.command.model.Piloto;
-import es.f1.pilotos.command.repository.PilotoRepo;
+import es.f1.pilotos.command.repository.PilotoCommandRepo;
 import es.f1.pilotos.command.repository.TipoRegistro;
+import es.f1.pilotos.command.service.PilotoCommandService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,15 +20,15 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class PilotoTest {
+public class PilotoCommandServiceTest {
 
     Piloto piloto;
 
     @Mock
-    PilotoRepo pilotoRepo;
+    PilotoCommandRepo pilotoCommandRepo;
 
     @InjectMocks
-    private es.f1.pilotos.command.service.Piloto pilotoService;
+    private PilotoCommandService pilotoService;
 
     @Before
     public void init() throws Exception{
@@ -41,7 +42,7 @@ public class PilotoTest {
 
     @Test
     public void givenAnExistingPilot_WhenIsInserting_ThenThrowException(){
-        when(pilotoRepo.findFirstByCodigoOrderByFechaCreacionDesc(any())).thenReturn(getExistingPiloto());
+        when(pilotoCommandRepo.findFirstByCodigoOrderByFechaCreacionDesc(any())).thenReturn(getExistingPiloto());
 
         Exception exception = assertThrows(RuntimeException.class, () -> {
             pilotoService.insertarPiloto(this.piloto);
@@ -55,25 +56,25 @@ public class PilotoTest {
 
     @Test
     public void givenANonExistingPilot_WhenIsInserting_ThenFinishSuccessfully(){
-        when(pilotoRepo.findFirstByCodigoOrderByFechaCreacionDesc(any())).thenReturn(Optional.empty());
+        when(pilotoCommandRepo.findFirstByCodigoOrderByFechaCreacionDesc(any())).thenReturn(Optional.empty());
 
         pilotoService.insertarPiloto(this.piloto);
 
-        verify(pilotoRepo,times(1)).save(any());
+        verify(pilotoCommandRepo,times(1)).save(any());
     }
 
     @Test
     public void givenAnExistingPilot_WhenIsUpdating_ThenFinishSuccessfully(){
-        when(pilotoRepo.findFirstByCodigoOrderByFechaCreacionDesc(any())).thenReturn(getExistingPiloto());
+        when(pilotoCommandRepo.findFirstByCodigoOrderByFechaCreacionDesc(any())).thenReturn(getExistingPiloto());
 
         pilotoService.modificarPiloto(this.piloto);
 
-        verify(pilotoRepo,times(1)).save(any());
+        verify(pilotoCommandRepo,times(1)).save(any());
     }
 
     @Test
     public void givenANonExistingPilot_WhenIsUpdating_ThenThrowException(){
-        when(pilotoRepo.findFirstByCodigoOrderByFechaCreacionDesc(any())).thenReturn(Optional.empty());
+        when(pilotoCommandRepo.findFirstByCodigoOrderByFechaCreacionDesc(any())).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(RuntimeException.class, () -> {
             pilotoService.modificarPiloto(this.piloto);
@@ -87,16 +88,16 @@ public class PilotoTest {
 
     @Test
     public void givenAnExistingPilot_WhenIsUDeletin_ThenThrowException(){
-        when(pilotoRepo.findFirstByCodigoOrderByFechaCreacionDesc(any())).thenReturn(getExistingPiloto());
+        when(pilotoCommandRepo.findFirstByCodigoOrderByFechaCreacionDesc(any())).thenReturn(getExistingPiloto());
 
         pilotoService.eliminarPiloto("BOR");
 
-        verify(pilotoRepo,times(1)).save(any());
+        verify(pilotoCommandRepo,times(1)).save(any());
     }
 
     @Test
     public void givenANonExistingPilot_WhenIsDeleting_ThenThrowException(){
-        when(pilotoRepo.findFirstByCodigoOrderByFechaCreacionDesc(any())).thenReturn(Optional.empty());
+        when(pilotoCommandRepo.findFirstByCodigoOrderByFechaCreacionDesc(any())).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(RuntimeException.class, () -> {
             pilotoService.eliminarPiloto("BOR");

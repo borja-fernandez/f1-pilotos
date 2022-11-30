@@ -5,6 +5,7 @@ import es.f1.pilotos.command.exceptions.DuplicateObjectException;
 import es.f1.pilotos.command.exceptions.ObjectNotFoundException;
 import es.f1.pilotos.command.model.Piloto;
 import es.f1.pilotos.command.model.PilotoHabilidad;
+import es.f1.pilotos.command.service.PilotoCommandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,7 @@ public class CommandController {
     private static final String API_PATH = PilotosApplication.PILOTOS_COMMAND_PATH + API_VERSION + "/piloto";
 
     @Autowired
-    es.f1.pilotos.command.service.Piloto pilotoService;
+    PilotoCommandService pilotoService;
 
     @PostMapping(value = API_PATH + "/{codigoPiloto}")
     public ResponseEntity insertarPiloto(@PathVariable String codigoPiloto,

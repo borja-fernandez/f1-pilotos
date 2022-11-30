@@ -19,4 +19,8 @@ spring:
         baseline-on-migrate: true
         table: flyway_schema_pilotos
         default-schema: pilotos
-
+    data:
+        mongodb:
+            host: localhost
+            port: 27017
+            database: dbPilotos

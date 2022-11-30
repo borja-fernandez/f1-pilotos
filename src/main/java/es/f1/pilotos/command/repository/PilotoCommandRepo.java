@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface PilotoRepo extends JpaRepository<Piloto, Integer> {
+public interface PilotoCommandRepo extends JpaRepository<Piloto, Integer> {
     Optional<Piloto> findFirstByCodigoOrderByFechaCreacionDesc(String codigo);
 }
