@@ -112,7 +112,7 @@ public class PilotoCommandServiceTest {
     private Optional<es.f1.pilotos.command.repository.Piloto> getExistingPiloto(){
         return Optional.of(es.f1.pilotos.command.repository.Piloto.builder()
                 .id(1)
-                .tipoRegistro(TipoRegistro.tipoRegistro.ALTA)
+                .tipoRegistro(TipoRegistro.tipoRegistro.ALTA_PILOTO)
                 .fechaCreacion(new Timestamp(System.currentTimeMillis()))
                 .nombre("BORJA FERNANDEZ")
                 .codigo("BOR")

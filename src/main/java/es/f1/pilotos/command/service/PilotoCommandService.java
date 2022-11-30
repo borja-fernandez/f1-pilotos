@@ -26,19 +26,19 @@ public class PilotoCommandService {
     public void insertarPiloto(es.f1.pilotos.command.model.Piloto pilotoRecibido){
         confirmarNoExistenciaPiloto(pilotoRecibido.getCodigo());
 
-        pilotoCommandRepo.save(mapearPilotoDesdeEntrada(pilotoRecibido, TipoRegistro.tipoRegistro.ALTA));
+        pilotoCommandRepo.save(mapearPilotoDesdeEntrada(pilotoRecibido, TipoRegistro.tipoRegistro.ALTA_PILOTO));
     }
 
     public void eliminarPiloto(String codigo){
         es.f1.pilotos.command.repository.Piloto ultimoRegistroDePilotoBD = confirmarExistenciaPiloto(codigo);
 
-        pilotoCommandRepo.save(mapearPilotoDesdeBD(ultimoRegistroDePilotoBD, TipoRegistro.tipoRegistro.BORRADO));
+        pilotoCommandRepo.save(mapearPilotoDesdeBD(ultimoRegistroDePilotoBD, TipoRegistro.tipoRegistro.BORRADO_PILOTO));
     }
 
     public void modificarPiloto(es.f1.pilotos.command.model.Piloto pilotoRecibido){
         confirmarExistenciaPiloto(pilotoRecibido.getCodigo());
 
-        pilotoCommandRepo.save(mapearPilotoDesdeEntrada(pilotoRecibido, TipoRegistro.tipoRegistro.MODIFICACION));
+        pilotoCommandRepo.save(mapearPilotoDesdeEntrada(pilotoRecibido, TipoRegistro.tipoRegistro.MODIFICACION_PILOTO));
     }
 
     public void insertarHabilidadEnPiloto(PilotoHabilidad pilotoHabilidadRecibido){
@@ -47,7 +47,8 @@ public class PilotoCommandService {
 
         confirmarNoExistenciaPilotoHabilidad(pilotoBD, habilidadBD);
 
-        pilotoHabilidadRepo.save(mapearNuevaHabilidadPilotoDesdeEntrada(pilotoBD, habilidadBD, pilotoHabilidadRecibido, TipoRegistro.tipoRegistro.ALTA));
+        pilotoHabilidadRepo.save(mapearNuevaHabilidadPilotoDesdeEntrada(pilotoBD, habilidadBD, pilotoHabilidadRecibido, TipoRegistro.tipoRegistro.ALTA_HABILIDAD));
+        pilotoCommandRepo.save(mapearPilotoDesdeBD(pilotoBD, TipoRegistro.tipoRegistro.MODIFICACION_HABILIDAD));
     }
 
     public void modificarHabilidadEnPiloto(PilotoHabilidad pilotoHabilidadRecibido){
@@ -56,7 +57,8 @@ public class PilotoCommandService {
 
         confirmarExistenciaPilotoHabilidad(pilotoBD, habilidadBD);
 
-        pilotoHabilidadRepo.save(mapearNuevaHabilidadPilotoDesdeEntrada(pilotoBD, habilidadBD, pilotoHabilidadRecibido, TipoRegistro.tipoRegistro.MODIFICACION));
+        pilotoHabilidadRepo.save(mapearNuevaHabilidadPilotoDesdeEntrada(pilotoBD, habilidadBD, pilotoHabilidadRecibido, TipoRegistro.tipoRegistro.MODIFICACION_HABILIDAD));
+        pilotoCommandRepo.save(mapearPilotoDesdeBD(pilotoBD, TipoRegistro.tipoRegistro.MODIFICACION_HABILIDAD));
     }
 
     private void confirmarNoExistenciaPiloto(String codigoPiloto){
@@ -68,8 +70,8 @@ public class PilotoCommandService {
 
     private void confirmarNoExistenciaPilotoHabilidad(es.f1.pilotos.command.repository.Piloto pilotoBD , Habilidad habilidadBD){
         Optional<es.f1.pilotos.command.repository.PilotoHabilidad> pilotoHabilidadBD =
-                pilotoHabilidadRepo.findFirstByIdPilotoAndAndIdHabilidadOrderByFechaCreacionDesc(
-                        pilotoBD.getId(),
+                pilotoHabilidadRepo.findFirstByCodigoPilotoAndAndIdHabilidadOrderByFechaCreacionDesc(
+                        pilotoBD.getCodigo(),
                         habilidadBD.getId());
         if(pilotoHabilidadBD.isPresent()) {
             throw new DuplicateObjectException("Ya está asociada la habilidad " + habilidadBD.getCodigo().trim() + " al piloto "+pilotoBD.getCodigo());
@@ -86,8 +88,8 @@ public class PilotoCommandService {
 
     private es.f1.pilotos.command.repository.PilotoHabilidad confirmarExistenciaPilotoHabilidad(es.f1.pilotos.command.repository.Piloto pilotoBD, Habilidad habilidadBD){
         Optional<es.f1.pilotos.command.repository.PilotoHabilidad> pilotoHabilidadBD =
-                pilotoHabilidadRepo.findFirstByIdPilotoAndAndIdHabilidadOrderByFechaCreacionDesc(
-                        pilotoBD.getId(),
+                pilotoHabilidadRepo.findFirstByCodigoPilotoAndAndIdHabilidadOrderByFechaCreacionDesc(
+                        pilotoBD.getCodigo(),
                         habilidadBD.getId());
         if(!pilotoHabilidadBD.isPresent()) {
             throw new ObjectNotFoundException("La habilidad " + habilidadBD.getCodigo() + " no está asociada al piloto "+pilotoBD.getCodigo());
@@ -101,6 +103,10 @@ public class PilotoCommandService {
             throw new ObjectNotFoundException("Habilidad inexistente con código "+codigoHabilidad);
         }
         return habilidadDB.get();
+    }
+
+    public List<es.f1.pilotos.command.repository.PilotoHabilidad> recuperarHabilidadesPilotoDesdeCodigoPiloto(String codigoPiloto){
+        return pilotoHabilidadRepo.findByCodigoPilotoOrderByIdHabilidad(codigoPiloto);
     }
 
     private es.f1.pilotos.command.repository.Piloto mapearPilotoDesdeEntrada(es.f1.pilotos.command.model.Piloto pilotoRecibido, TipoRegistro.tipoRegistro tipoRegistro){
@@ -123,7 +129,7 @@ public class PilotoCommandService {
 
     private es.f1.pilotos.command.repository.PilotoHabilidad mapearNuevaHabilidadPilotoDesdeEntrada(es.f1.pilotos.command.repository.Piloto pilotoBD, Habilidad habilidadBD, PilotoHabilidad pilotoHabilidadRecibida, TipoRegistro.tipoRegistro tipoRegistro){
         return es.f1.pilotos.command.repository.PilotoHabilidad.builder()
-                .idPiloto(pilotoBD.getId())
+                .codigoPiloto(pilotoBD.getCodigo())
                 .idHabilidad(habilidadBD.getId())
                 .valor(pilotoHabilidadRecibida.getValor())
                 .fechaCreacion(new Timestamp(System.currentTimeMillis()))
@@ -131,7 +137,7 @@ public class PilotoCommandService {
                 .build();
     }
 
-    public List<Piloto> recuperarTodosPilotos(){
-        return pilotoCommandRepo.findAll();
+    public List<Piloto> recuperarPilotosASincronizar(Timestamp ultimaSincronizacion){
+        return pilotoCommandRepo.findAllByFechaCreacionAfterOrderById(ultimaSincronizacion);
     }
 }

@@ -23,8 +23,8 @@ public class PilotoHabilidad {
     private TipoRegistro.tipoRegistro tipoRegistro;
     @Column(name="FECHA_CREACION_REGISTRO")
     private Timestamp fechaCreacion;
-    @Column(name="SQ_PILOTO")
-    private int idPiloto;
+    @Column(name="CODIGO_A3_PILOTO")
+    private String codigoPiloto;
     @Column(name="SQ_HABILIDAD")
     private int idHabilidad;
     @Column(name="CANTIDAD")
@@ -33,19 +33,11 @@ public class PilotoHabilidad {
     @JoinColumn(name="SQ_HABILIDAD", nullable=false, insertable = false, updatable = false)
     private Habilidad habilidad;
 
-    public boolean estaEnVigor() {
-        if (this.tipoRegistro.equals(TipoRegistro.tipoRegistro.BORRADO)) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
     public boolean esAlta() {
-        return this.tipoRegistro.equals(TipoRegistro.tipoRegistro.ALTA);
+        return this.tipoRegistro.equals(TipoRegistro.tipoRegistro.ALTA_HABILIDAD);
     }
 
     public boolean esModification() {
-        return this.tipoRegistro.equals(TipoRegistro.tipoRegistro.MODIFICACION);
+        return this.tipoRegistro.equals(TipoRegistro.tipoRegistro.MODIFICACION_HABILIDAD);
     }
 }

@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 
 @SpringBootApplication
 @EnableMongoRepositories(basePackages = {"es.f1.pilotos.query.repository"})
-@EnableJpaRepositories(basePackages = {"es.f1.pilotos.command.repository"})
+@EnableJpaRepositories(basePackages = {"es.f1.pilotos.command.repository", "es.f1.pilotos.sync.repository"})
 public class PilotosApplication {
 
 	public static final String PILOTOS_QUERY_PATH = "/pilotos/consultas";

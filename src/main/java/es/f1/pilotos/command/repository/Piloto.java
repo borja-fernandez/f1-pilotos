@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Table(name = "PILOTO")
@@ -32,12 +31,12 @@ public class Piloto {
     private String nombre;
     @Column(name="FECHA_NACIMIENTO")
     private Date fechaNacimiento;
-    @OneToMany()
-    @JoinColumn(name="SQ_PILOTO", nullable=false, insertable = false, updatable = false)
-    List<PilotoHabilidad> habilidadesPiloto;
+//    @OneToMany()
+//    @JoinColumn(name="CODIGO_A3_PILOTO", nullable=false, insertable = false, updatable = false)
+//    List<PilotoHabilidad> habilidadesPiloto;
 
     public boolean estaEnVigor() {
-        if (this.tipoRegistro.equals(TipoRegistro.tipoRegistro.BORRADO)) {
+        if (this.tipoRegistro.equals(TipoRegistro.tipoRegistro.BORRADO_PILOTO)) {
             return false;
         } else {
             return true;
@@ -45,10 +44,10 @@ public class Piloto {
     }
 
     public boolean esAlta() {
-        return this.tipoRegistro.equals(TipoRegistro.tipoRegistro.ALTA);
+        return this.tipoRegistro.equals(TipoRegistro.tipoRegistro.ALTA_PILOTO);
     }
 
     public boolean esModification() {
-        return this.tipoRegistro.equals(TipoRegistro.tipoRegistro.MODIFICACION);
+        return this.tipoRegistro.equals(TipoRegistro.tipoRegistro.MODIFICACION_PILOTO);
     }
 }
