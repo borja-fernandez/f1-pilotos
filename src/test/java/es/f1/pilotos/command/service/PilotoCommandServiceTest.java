@@ -1,9 +1,8 @@
-package es.f1.pilotos.service;
+package es.f1.pilotos.command.service;
 
 import es.f1.pilotos.command.model.Piloto;
 import es.f1.pilotos.command.repository.PilotoCommandRepo;
 import es.f1.pilotos.command.repository.TipoRegistro;
-import es.f1.pilotos.command.service.PilotoCommandService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

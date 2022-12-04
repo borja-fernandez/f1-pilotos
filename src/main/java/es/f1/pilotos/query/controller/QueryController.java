@@ -2,6 +2,7 @@ package es.f1.pilotos.query.controller;
 
 import es.f1.pilotos.PilotosApplication;
 import es.f1.pilotos.command.exceptions.ObjectNotFoundException;
+import es.f1.pilotos.query.model.PilotoResponse;
 import es.f1.pilotos.query.service.PilotoQueryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,7 @@ public class QueryController {
     PilotoQueryService pilotoQueryService;
 
     @GetMapping(value = API_PATH + "/{id}")
-    public ResponseEntity getPiloto(@PathVariable String id){
+    public ResponseEntity<PilotoResponse> getPiloto(@PathVariable String id){
         return ResponseEntity.ok(pilotoQueryService.recuperarPiloto(id));
     }
 
