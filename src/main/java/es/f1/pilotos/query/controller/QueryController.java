@@ -4,6 +4,11 @@ import es.f1.pilotos.PilotosApplication;
 import es.f1.pilotos.command.exceptions.ObjectNotFoundException;
 import es.f1.pilotos.query.model.PilotoResponse;
 import es.f1.pilotos.query.service.PilotoQueryService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +25,13 @@ public class QueryController {
     @Autowired
     PilotoQueryService pilotoQueryService;
 
+    @Operation(summary = "Get a pilot by its code")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found the pilot",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = PilotoResponse.class)) }),
+            @ApiResponse(responseCode = "404", description = "Pilot not found",
+                    content = @Content) })
     @GetMapping(value = API_PATH + "/{id}")
     public ResponseEntity<PilotoResponse> getPiloto(@PathVariable String id){
         return ResponseEntity.ok(pilotoQueryService.recuperarPiloto(id));
