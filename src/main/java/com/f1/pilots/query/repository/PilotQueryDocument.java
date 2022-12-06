@@ -12,10 +12,10 @@ import java.util.HashMap;
 @AllArgsConstructor @NoArgsConstructor
 @Builder
 @Document("piloto")
-public class Piloto {
+public class PilotQueryDocument {
     @Id
-    public String codigo;
-    public String nombre;
-    public Date fecha_nacimiento;
-    public HashMap<String, Integer> habilidades;
+    public String code;
+    public String name;
+    public Date date_of_birth;
+    public HashMap<String, Integer> skillList;
 }

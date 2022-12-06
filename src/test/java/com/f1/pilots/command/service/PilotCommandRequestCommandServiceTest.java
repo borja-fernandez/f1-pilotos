@@ -28,7 +28,7 @@ public class PilotCommandRequestCommandServiceTest {
     PilotCommandRepo pilotCommandRepo;
 
     @InjectMocks
-    private PilotoCommandService pilotoService;
+    private PilotCommandService pilotoService;
 
     @Before
     public void init() throws Exception{
@@ -42,13 +42,13 @@ public class PilotCommandRequestCommandServiceTest {
 
     @Test
     public void givenAnExistingPilot_WhenIsInserting_ThenThrowException(){
-        when(pilotCommandRepo.findFirstByCodeA3OrderByCreationDateDesc(any())).thenReturn(getExistingPiloto());
+        when(pilotCommandRepo.findFirstByCodeA3OrderByCreationDateDesc(this.pilotCommandRequest.getCodeA3())).thenReturn(getExistingPiloto());
 
         Exception exception = assertThrows(RuntimeException.class, () -> {
             pilotoService.insertarPiloto(this.pilotCommandRequest);
         });
 
-        String expectedMessage = "Ya existe un piloto";
+        String expectedMessage = "Pilot " + this.pilotCommandRequest.getCodeA3() + " already exists";
         String actualMessage = exception.getMessage();
 
         assertTrue(actualMessage.contains(expectedMessage));
@@ -74,13 +74,13 @@ public class PilotCommandRequestCommandServiceTest {
 
     @Test
     public void givenANonExistingPilot_WhenIsUpdating_ThenThrowException(){
-        when(pilotCommandRepo.findFirstByCodeA3OrderByCreationDateDesc(any())).thenReturn(Optional.empty());
+        when(pilotCommandRepo.findFirstByCodeA3OrderByCreationDateDesc(this.pilotCommandRequest.getCodeA3())).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(RuntimeException.class, () -> {
             pilotoService.modificarPiloto(this.pilotCommandRequest);
         });
 
-        String expectedMessage = "Piloto inexistente";
+        String expectedMessage = "Pilot " + this.pilotCommandRequest.getCodeA3() + " doesn't exist";
         String actualMessage = exception.getMessage();
 
         assertTrue(actualMessage.contains(expectedMessage));
@@ -103,7 +103,7 @@ public class PilotCommandRequestCommandServiceTest {
             pilotoService.eliminarPiloto("BOR");
         });
 
-        String expectedMessage = "Piloto inexistente";
+        String expectedMessage = "Pilot BOR doesn't exist";
         String actualMessage = exception.getMessage();
 
         assertTrue(actualMessage.contains(expectedMessage));

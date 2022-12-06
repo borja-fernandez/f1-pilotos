@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class PilotoCommandService {
+public class PilotCommandService {
 
     @Autowired
     PilotCommandRepo pilotCommandRepo;
@@ -65,7 +65,7 @@ public class PilotoCommandService {
     private void confirmarNoExistenciaPiloto(String codigoPiloto){
         Optional<PilotCommandEntity> ultimoRegistroDePilotoDB = pilotCommandRepo.findFirstByCodeA3OrderByCreationDateDesc(codigoPiloto);
         if(ultimoRegistroDePilotoDB.isPresent() && ultimoRegistroDePilotoDB.get().isAvailable()) {
-            throw new DuplicateObjectException("Ya existe un piloto con el código "+codigoPiloto);
+            throw new DuplicateObjectException("Pilot " + codigoPiloto + " already exists");
         }
     }
 
@@ -75,14 +75,14 @@ public class PilotoCommandService {
                         pilotCommandEntityBD.getCodeA3(),
                         skillCommandEntityBD.getId());
         if(pilotoHabilidadBD.isPresent()) {
-            throw new DuplicateObjectException("Ya está asociada la habilidad " + skillCommandEntityBD.getCode().trim() + " al piloto "+ pilotCommandEntityBD.getCodeA3());
+            throw new DuplicateObjectException("Pilot " + pilotCommandEntityBD.getCodeA3() + " already has Skill " + skillCommandEntityBD.getCode().trim());
         }
     }
 
     private PilotCommandEntity confirmarExistenciaPiloto(String codigoPiloto){
         Optional<PilotCommandEntity> ultimoRegistroDePilotoDB = pilotCommandRepo.findFirstByCodeA3OrderByCreationDateDesc(codigoPiloto);
         if(!ultimoRegistroDePilotoDB.isPresent() || !ultimoRegistroDePilotoDB.get().isAvailable()) {
-            throw new ObjectNotFoundException("Piloto inexistente con código "+codigoPiloto);
+            throw new ObjectNotFoundException("Pilot " + codigoPiloto + " doesn't exist");
         }
         return ultimoRegistroDePilotoDB.get();
     }
@@ -93,7 +93,7 @@ public class PilotoCommandService {
                         pilotCommandEntityBD.getCodeA3(),
                         skillCommandEntityBD.getId());
         if(!pilotoHabilidadBD.isPresent()) {
-            throw new ObjectNotFoundException("La habilidad " + skillCommandEntityBD.getCode() + " no está asociada al piloto "+ pilotCommandEntityBD.getCodeA3());
+            throw new ObjectNotFoundException("Pilot "+ pilotCommandEntityBD.getCodeA3() + "doesn't have skill " + skillCommandEntityBD.getCode());
         }
         return pilotoHabilidadBD.get();
     }
@@ -101,7 +101,7 @@ public class PilotoCommandService {
     private SkillCommandEntity recuperarHabilidadDesdeCodigo(String codigoHabilidad){
         Optional<SkillCommandEntity> habilidadDB = skillCommandRepo.findByCode(codigoHabilidad);
         if(!habilidadDB.isPresent()) {
-            throw new ObjectNotFoundException("Habilidad inexistente con código "+codigoHabilidad);
+            throw new ObjectNotFoundException("Skill " + codigoHabilidad + "doesn't exist");
         }
         return habilidadDB.get();
     }

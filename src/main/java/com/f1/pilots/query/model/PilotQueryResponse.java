@@ -9,9 +9,9 @@ import java.util.HashMap;
 
 @AllArgsConstructor @NoArgsConstructor
 @Builder
-public class PilotoResponse {
-    public String codigo;
-    public String nombre;
-    public Date fecha_nacimiento;
-    public HashMap<String, Integer> habilidades;
+public class PilotQueryResponse {
+    public String code;
+    public String name;
+    public Date date_of_birth;
+    public HashMap<String, Integer> skills;
 }

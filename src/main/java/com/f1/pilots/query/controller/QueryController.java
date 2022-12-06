@@ -1,9 +1,9 @@
 package com.f1.pilots.query.controller;
 
-import com.f1.pilots.PilotosApplication;
+import com.f1.pilots.PilotsApplication;
 import com.f1.pilots.command.exceptions.ObjectNotFoundException;
-import com.f1.pilots.query.model.PilotoResponse;
-import com.f1.pilots.query.service.PilotoQueryService;
+import com.f1.pilots.query.model.PilotQueryResponse;
+import com.f1.pilots.query.service.PilotQueryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -20,21 +20,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class QueryController {
     private static final String API_VERSION = "/v1";
-    private static final String API_PATH = PilotosApplication.PILOT_QUERY_PATH + API_VERSION + "/pilot";
+    private static final String API_PATH = PilotsApplication.PILOT_QUERY_PATH + API_VERSION + "/pilot";
 
     @Autowired
-    PilotoQueryService pilotoQueryService;
+    PilotQueryService pilotQueryService;
 
     @Operation(summary = "Get a pilot by its code")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found the pilot",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = PilotoResponse.class)) }),
+                            schema = @Schema(implementation = PilotQueryResponse.class)) }),
             @ApiResponse(responseCode = "404", description = "Pilot not found",
                     content = @Content) })
-    @GetMapping(value = API_PATH + "/{id}")
-    public ResponseEntity<PilotoResponse> getPiloto(@PathVariable String id){
-        return ResponseEntity.ok(pilotoQueryService.recuperarPiloto(id));
+    @GetMapping(value = API_PATH + "/{pilot_code}")
+    public ResponseEntity<PilotQueryResponse> getPiloto(@PathVariable String pilot_code){
+        return ResponseEntity.ok(pilotQueryService.recuperarPiloto(pilot_code));
     }
 
     @ExceptionHandler({ ObjectNotFoundException.class  })

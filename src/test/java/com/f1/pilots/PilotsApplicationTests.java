@@ -8,12 +8,12 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(properties = "spring.profiles.active=local", classes = PilotosApplication.class)
+@SpringBootTest(properties = "spring.profiles.active=local", classes = PilotsApplication.class)
 @TestPropertySource("classpath.application.yml")
-class PilotosApplicationTests {
+class PilotsApplicationTests {
 
 	@InjectMocks
-	PilotosApplication pilotosApplication;
+    PilotsApplication pilotsApplication;
 
 	@Test
 	void contextLoads() {

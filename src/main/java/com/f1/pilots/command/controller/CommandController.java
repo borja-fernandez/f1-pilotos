@@ -1,11 +1,11 @@
 package com.f1.pilots.command.controller;
 
-import com.f1.pilots.PilotosApplication;
+import com.f1.pilots.PilotsApplication;
 import com.f1.pilots.command.exceptions.DuplicateObjectException;
 import com.f1.pilots.command.exceptions.ObjectNotFoundException;
 import com.f1.pilots.command.model.PilotCommandRequest;
 import com.f1.pilots.command.model.SkillCommandRequest;
-import com.f1.pilots.command.service.PilotoCommandService;
+import com.f1.pilots.command.service.PilotCommandService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class CommandController {
     private static final String API_VERSION = "/v1";
-    private static final String API_PATH = PilotosApplication.PILOT_COMMAND_PATH + API_VERSION + "/pilot";
+    private static final String API_PATH = PilotsApplication.PILOT_COMMAND_PATH + API_VERSION + "/pilot";
 
     @Autowired
-    PilotoCommandService pilotoService;
+    PilotCommandService pilotoService;
 
     @Operation(summary = "Include a new pilot")
     @ApiResponses(value = {

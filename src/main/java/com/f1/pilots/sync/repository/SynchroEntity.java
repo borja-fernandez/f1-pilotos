@@ -13,12 +13,12 @@ import java.sql.Timestamp;
 @Getter
 @Builder
 @NoArgsConstructor @AllArgsConstructor
-public class Sincronizacion {
+public class SynchroEntity {
     @Id
     @Column(name="TIPO_SINCRONIZACION")
     @Enumerated(EnumType.STRING)
-    private TipoSincronizacion.tipoSincronizacion tipoSincronizacion;
+    private Synchronization.type type;
 
     @Column(name="FECHA_ULTIMA_SINCRONIZACION")
-    private Timestamp fechaUltimaSincronizacion;
+    private Timestamp lastSynchroDate;
 }

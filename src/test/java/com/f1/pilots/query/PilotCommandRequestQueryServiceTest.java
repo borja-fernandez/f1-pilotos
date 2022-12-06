@@ -1,9 +1,9 @@
 package com.f1.pilots.query;
 
-import com.f1.pilots.query.model.PilotoResponse;
-import com.f1.pilots.query.repository.Piloto;
-import com.f1.pilots.query.repository.PilotoQueryRepo;
-import com.f1.pilots.query.service.PilotoQueryService;
+import com.f1.pilots.query.model.PilotQueryResponse;
+import com.f1.pilots.query.repository.PilotQueryDocument;
+import com.f1.pilots.query.repository.PilotQueryRepo;
+import com.f1.pilots.query.service.PilotQueryService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,33 +19,33 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class PilotCommandRequestQueryServiceTest {
 
-    Piloto piloto;
+    PilotQueryDocument pilotQueryDocument;
 
     @Mock
-    PilotoQueryRepo pilotoQueryRepo;
+    PilotQueryRepo pilotQueryRepo;
 
     @InjectMocks
-    private PilotoQueryService pilotoService;
+    private PilotQueryService pilotoService;
 
     @Before
     public void init() throws Exception{
-        this.piloto = Piloto.builder()
-                        .codigo("BOR")
-                        .nombre("BORJA FERNANDEZ")
+        this.pilotQueryDocument = PilotQueryDocument.builder()
+                        .code("BOR")
+                        .name("BORJA FERNANDEZ")
                         .build();
 
     }
 
     @Test
     public void givenAnNonExistingPilot_WhenIsGetting_ThenThrowException(){
-        String codigoPilotoABuscar = "CODIGO";
-        when(pilotoQueryRepo.findByCodigo(codigoPilotoABuscar)).thenReturn(Optional.empty());
+        String codigoPilotoABuscar = "KUBICA";
+        when(pilotQueryRepo.findByCode(codigoPilotoABuscar)).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(RuntimeException.class, () -> {
             pilotoService.recuperarPiloto(codigoPilotoABuscar);
         });
 
-        String expectedMessage = "Piloto " + codigoPilotoABuscar + " no encontrado";
+        String expectedMessage = "Pilot " + codigoPilotoABuscar + " not found";
         String actualMessage = exception.getMessage();
 
         assertTrue(actualMessage.contains(expectedMessage));
@@ -54,16 +54,16 @@ public class PilotCommandRequestQueryServiceTest {
     @Test
     public void givenANExistingPilot_WhenIsGetting_ThenReturnPilotInfo(){
         String codigoPilotoABuscar = "CODIGO";
-        when(pilotoQueryRepo.findByCodigo(codigoPilotoABuscar)).thenReturn(Optional.of(this.piloto));
+        when(pilotQueryRepo.findByCode(codigoPilotoABuscar)).thenReturn(Optional.of(this.pilotQueryDocument));
 
-        PilotoResponse pilotoResponse = pilotoService.recuperarPiloto(codigoPilotoABuscar);
+        PilotQueryResponse pilotQueryResponse = pilotoService.recuperarPiloto(codigoPilotoABuscar);
 
         assertAll(
-                () -> pilotoResponse.codigo.equalsIgnoreCase(this.piloto.codigo),
-                () -> pilotoResponse.nombre.equalsIgnoreCase(this.piloto.nombre)
+                () -> pilotQueryResponse.code.equalsIgnoreCase(this.pilotQueryDocument.code),
+                () -> pilotQueryResponse.name.equalsIgnoreCase(this.pilotQueryDocument.name)
         );
-        assertTrue(pilotoResponse.codigo.equalsIgnoreCase(this.piloto.codigo));
-        assertTrue(pilotoResponse.nombre.equalsIgnoreCase(this.piloto.nombre));
+        assertTrue(pilotQueryResponse.code.equalsIgnoreCase(this.pilotQueryDocument.code));
+        assertTrue(pilotQueryResponse.name.equalsIgnoreCase(this.pilotQueryDocument.name));
     }
 
 }
