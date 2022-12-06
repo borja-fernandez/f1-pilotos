@@ -34,9 +34,6 @@ dependencies {
 	testRuntimeOnly 'org.junit.vintage:junit-vintage-engine'
 }
 
-//tasks.named('test') {
-//	useJUnitPlatform()
-//}
 test {
 	useJUnitPlatform()
 }
