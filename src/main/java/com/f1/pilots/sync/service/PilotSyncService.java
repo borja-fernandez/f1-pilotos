@@ -5,6 +5,9 @@ import com.f1.pilots.command.repository.PilotSkillCommandEntity;
 import com.f1.pilots.command.service.PilotCommandService;
 import com.f1.pilots.query.repository.PilotQueryDocument;
 import com.f1.pilots.query.service.PilotQueryService;
+import com.f1.pilots.rabbitMQ.RabbitMQSender;
+import com.f1.pilots.rabbitMQ.model.Movement;
+import com.f1.pilots.rabbitMQ.model.PilotoRabbit;
 import com.f1.pilots.sync.repository.SynchroEntity;
 import com.f1.pilots.sync.repository.SynchroRepo;
 import com.f1.pilots.sync.repository.Synchronization;
@@ -26,10 +29,13 @@ public class PilotSyncService {
     PilotCommandService pilotCommandService;
 
     @Autowired
-    PilotQueryService pilotQueryServiceQuery;
+    PilotQueryService pilotQueryService;
 
     @Autowired
     SynchroRepo synchroRepo;
+
+    @Autowired
+    RabbitMQSender rabbitMQSender;
 
     public void syncPilotos(){
         log.info("Inicio del proceso de sincronización");
@@ -38,12 +44,21 @@ public class PilotSyncService {
 
         List<PilotCommandEntity> pilotosH2 = recuperarPilotosH2(ultimaSincronizacion);
         for(PilotCommandEntity pH2: pilotosH2){
-            grabarPilotoMongoDB(pH2);
+            publishPilot(grabarPilotoMongoDB(pH2), pH2.isAvailable());
             synchroRepo.save(SynchroEntity.builder()
                             .type(Synchronization.type.PILOTOS)
                             .lastSynchroDate(pH2.getCreationDate())
                             .build());
         }
+    }
+    private void publishPilot(PilotQueryDocument pilotQueryDocument, boolean isAvailable){
+        rabbitMQSender.send(PilotoRabbit.builder()
+                        .code(pilotQueryDocument.code)
+                        .date_of_birth(pilotQueryDocument.date_of_birth)
+                        .name(pilotQueryDocument.name)
+                        .skills(pilotQueryDocument.skillList)
+                        .type(isAvailable? Movement.type.MODIFICACION:Movement.type.BORRADO)
+                .build());
     }
 
     private Timestamp recuperarTSUltimaSincronizacion(){
@@ -65,14 +80,17 @@ public class PilotSyncService {
         return pilotosH2;
     }
 
-    private void grabarPilotoMongoDB(PilotCommandEntity pH2){
+    private PilotQueryDocument grabarPilotoMongoDB(PilotCommandEntity pH2){
         log.info("Se graba la info en MongoDB con lo recibido");
+        PilotQueryDocument pMongoDB;
         if (!pH2.isAvailable()) {
-            pilotQueryServiceQuery.eliminarPiloto(pH2.getCodeA3());
+            pMongoDB = pilotQueryService.recuperarPilotoQuery(pH2.getCodeA3());
+            pilotQueryService.eliminarPiloto(pH2.getCodeA3());
         } else {
-            PilotQueryDocument pMongoDB = mapearPilotoDeH2AMongoDB(pH2);
-            pilotQueryServiceQuery.grabarPiloto(pMongoDB);
+            pMongoDB = mapearPilotoDeH2AMongoDB(pH2);
+            pilotQueryService.grabarPiloto(pMongoDB);
         }
+        return pMongoDB;
     }
 
     private PilotQueryDocument mapearPilotoDeH2AMongoDB(PilotCommandEntity pH2){

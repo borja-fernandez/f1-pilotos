@@ -18,7 +18,7 @@ public class PilotQueryService {
         return mapearPilotoResponseDesdePilotoQuery(recuperarPilotoQuery(codigo));
     }
 
-    private PilotQueryDocument recuperarPilotoQuery(String codigo){
+    public PilotQueryDocument recuperarPilotoQuery(String codigo){
         Optional<PilotQueryDocument> piloto = pilotQueryRepo.findByCode(codigo);
 
         if(!piloto.isPresent()) {
